@@ -171,6 +171,13 @@ TARGET_FS_CONFIG_GEN += $(QCOM_COMMON_PATH)/config.fs
 PRODUCT_PACKAGES += \
     libcurl
 
+# HIDL
+PRODUCT_PACKAGES += \
+    android.hidl.base@1.0 \
+    android.hidl.base@1.0_system \
+    android.hidl.manager@1.0 \
+    android.hidl.manager@1.0_system
+
 # Partition source order for Product/Build properties pickup.
 PRODUCT_SYSTEM_PROPERTIES += \
     ro.product.property_source_order=odm,vendor,product,system_ext,system
