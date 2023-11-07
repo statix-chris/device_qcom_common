@@ -16,6 +16,9 @@ QCOM_COMMON_PATH := device/qcom/common
 BOARD_USES_QCOM_HARDWARE := true
 TARGET_FWK_SUPPORTS_FULL_VALUEADDS := true
 
+# Enable support for APEX updates
+$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
+
 ifeq ($(TARGET_BOARD_PLATFORM),)
 $(error "TARGET_BOARD_PLATFORM is not defined yet, please define in your device makefile so it's accessible to QCOM common.")
 endif
@@ -217,6 +220,7 @@ PRODUCT_PACKAGES += \
 
 # Common android HIDL vendor variant
 PRODUCT_PACKAGES += \
+    android.frameworks.sensorservice@1.0.vendor \
     android.hardware.drm@1.4.vendor \
     android.hardware.gatekeeper@1.0.vendor \
     android.hardware.keymaster@4.1.vendor \
@@ -247,6 +251,7 @@ PRODUCT_COPY_FILES += \
 
 # Permissions
 PRODUCT_COPY_FILES += \
+    $(QCOM_COMMON_PATH)/permissions/privapp-permissions-hotword.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-hotword.xml \
     device/qcom/qssi/privapp-permissions-qti.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-qti.xml \
     device/qcom/qssi/privapp-permissions-qti-system-ext.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-qti-system-ext.xml \
     device/qcom/qssi/qti_whitelist.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/qti_whitelist.xml \
@@ -264,4 +269,67 @@ PRODUCT_VENDOR_PROPERTIES += \
 PRODUCT_PACKAGES += \
     libwfdaac_vendor
 
+# Enable allowlist for some aosp packages that should not be scanned in a "stopped" state
+# Some CTS test case failed after enabling feature config_stopSystemPackagesByDefault
+PRODUCT_PACKAGES += initial-package-stopped-states-aosp.xml
+
+# Compile SystemUI on device with `speed`.
+PRODUCT_PROPERTY_OVERRIDES += \
+    dalvik.vm.systemuicompilerfilter=speed
+
+# properties
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    dalvik.vm.dex2oat64.enabled=true \
+    debug.sf.frame_rate_multiple_threshold=60 \
+    persist.arm64.memtag.system_server=off \
+    ro.launcher.blur.appLaunch=0 \
+    ro.sf.use_latest_hwc_vsync_period=0 \
+    ro.surface_flinger.enable_frame_rate_override=false
+
+# EGL - Blobcache configuration
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    ro.egl.blobcache.multifile=true \
+    ro.egl.blobcache.multifile_limit=33554432
+
+# Disable RescueParty due to high risk of data loss
+PRODUCT_PRODUCT_PROPERTIES += \
+    persist.sys.disable_rescue=true
+
+# StrictMode
+ifneq ($(TARGET_BUILD_VARIANT),eng)
+# Disable extra StrictMode features on all non-engineering builds
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    persist.sys.strictmode.disable=true
+endif
+
+# curl
+PRODUCT_PACKAGES += \
+    curl
+
+# Exfat FS
+PRODUCT_PACKAGES += \
+    fsck.exfat \
+    mkfs.exfat
+
+# Protobuf - Workaround for prebuilt Qualcomm HAL
+PRODUCT_PACKAGES += \
+    libprotobuf-cpp-full-3.9.1-vendorcompat \
+    libprotobuf-cpp-lite-3.9.1-vendorcompat
+
+# QTI framework detect
+PRODUCT_PACKAGES += \
+    libvndfwk_detect_jni.qti \
+    libqti_vndfwk_detect \
+    libvndfwk_detect_jni.qti.vendor \
+    libqti_vndfwk_detect.vendor \
+    libqti_vndfwk_detect_system \
+    libqti_vndfwk_detect_vendor \
+    libvndfwk_detect_jni.qti_system \
+    libvndfwk_detect_jni.qti.vendor
+
+# Wlan
+PRODUCT_PACKAGES += \
+    libwpa_client
+
+PRODUCT_VENDOR_MOVE_ENABLED := true
 endif # QCOM_BOARD_PLATFORMS
