@@ -183,6 +183,15 @@ PRODUCT_PACKAGES += \
     android.hidl.manager@1.0 \
     android.hidl.manager@1.0_system
 
+# Common android HIDL vendor variant
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.4.vendor \
+    android.hardware.gatekeeper@1.0.vendor \
+    android.hardware.keymaster@4.1.vendor \
+    android.hardware.neuralnetworks@1.3.vendor \
+    android.hardware.authsecret@1.0.vendor \
+    vendor.qti.hardware.camera.device@1.0.vendor
+
 # Partition source order for Product/Build properties pickup.
 PRODUCT_SYSTEM_PROPERTIES += \
     ro.product.property_source_order=odm,vendor,product,system_ext,system
