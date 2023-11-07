@@ -13,6 +13,8 @@
 # limitations under the License.
 
 QCOM_COMMON_PATH := device/qcom/common
+BOARD_USES_QCOM_HARDWARE := true
+TARGET_FWK_SUPPORTS_FULL_VALUEADDS := true
 
 ifeq ($(TARGET_BOARD_PLATFORM),)
 $(error "TARGET_BOARD_PLATFORM is not defined yet, please define in your device makefile so it's accessible to QCOM common.")
@@ -156,6 +158,9 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
 
 DEVICE_FRAMEWORK_MANIFEST_FILE += \
     device/qcom/qssi/framework_manifest.xml
+    
+PRODUCT_VENDOR_PROPERTIES += ro.vendor.qti.va_aosp.support=1
+PRODUCT_ODM_PROPERTIES += ro.vendor.qti.va_odm.support=1
 endif
 
 # Opt out of 16K alignment changes
