@@ -13,7 +13,7 @@
 # limitations under the License.
 
 QCOM_COMMON_PATH := device/qcom/common
-BOARD_USES_QCOM_HARDWARE := true
+PRODUCT_USES_QCOM_HARDWARE := true
 TARGET_FWK_SUPPORTS_FULL_VALUEADDS := true
 
 # Enable support for APEX updates
